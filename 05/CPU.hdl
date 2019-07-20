@@ -40,17 +40,16 @@ CHIP CPU {
 
     PARTS:
     ARegister (in = aIn, load = setA, out = aOut, out[0..14] = addressM);
-	
 	DRegister (in = aluOut, load = setD, out = aluIn1);
-	
 	PC (in = aOut, load = jump, inc = true, reset = reset, out[0..14] = pc);
-	
 	ALU (x = aluIn1, y = aluIn2, zx = instruction[11], nx = instruction[10], zy = instruction[9], 
 		ny = instruction[8], f = instruction[7], no = instruction[6], out = aluOut, out = outM, zr = zero, ng = negative);
 	
+	// Multiplexer for register A
 	Mux16 (a = aluOut, b = instruction, sel = isAinstruction, out = aIn);
-	Mux16 (a = aOut, b = inM, sel = setAM, out = aluIn2);
 	
+	// Multiplexer for using A or M
+	Mux16 (a = aOut, b = inM, sel = setAM, out = aluIn2);
 	
 	// Set register D
 	And (a = instruction[4], b = instruction[15], out = setD);
@@ -102,7 +101,9 @@ CHIP CPU {
 	And (a = instruction[0], b = instruction[1], out = tmpJMP);
 	And (a = tmpJMP, b = instruction[2], out = JMP);
 	
+	// Or all jumps
 	Or8Way (in[0] = JEQ, in[1] = JNE, in[2] = JLT, in[3] = JLE, in[4] = JGT, in[5] = JGE, in[6] = JMP, in[7] = false, out = jumpTemp);
+	// Jump if it's a C instruction
 	And (a = instruction[15], b = jumpTemp, out = jump);
 }
 
