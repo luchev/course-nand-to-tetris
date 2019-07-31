@@ -5,13 +5,12 @@ class CommandAdd extends Command {
 
     /**
      * Stack: ..., E, R, SP
-     * in position E we want to have E - R
+     * in position E we want to have E + R
      *
      * Decrease SP by 1 to point R
      * Keep R in D
      * Point A to SP - 1 (which is E, as SP points R now)
      * Add D to M (M points E, D contains R so we add them and save the result directly in E)
-     * End: SP points R, E now contains E + R
      */
     @Override
     String parse() {
