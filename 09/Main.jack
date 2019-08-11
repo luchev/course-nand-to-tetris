@@ -1,0 +1,10 @@
+class Main {
+    function void main() {
+        var String s;
+        var Console console;
+        let console = Console.new();
+        do console.run();
+        do console.dispose();
+        return;
+    }
+}

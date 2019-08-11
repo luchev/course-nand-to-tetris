@@ -1,0 +1,137 @@
+class Console {
+    field Array lines;
+    field int height;
+    field int width;
+    field boolean exit;
+
+    constructor Console new() {
+        do initialize();
+        return this;
+    }
+
+    method void run() {
+        var char key;
+        var String line;
+        var boolean exit;
+
+        while (~exit) {
+            while (key = 0) {
+                let key = Keyboard.keyPressed();
+            }
+            
+            do processKey(key);
+            do clearScreen();
+            do printScreen();
+
+            while (~(key = 0)) {
+                let key = Keyboard.keyPressed();
+            }
+        }
+        return;
+    }
+
+    method void processKey(char key) {
+        var String line;
+        var int t;
+        let line = lines[22];
+        if (key = String.backSpace()) {
+            if (line.length() > 0) {
+                let t = line.length() - 1;
+                do line.setCharAt(t, "A");
+                do line.eraseLastChar();
+            }
+        }
+        else {
+            if (key = 128) { // enter
+                do executeCommand();
+            }
+            else {
+                do line.appendChar(key);
+            }
+        }
+
+        return;
+    }
+
+    method void executeCommand() {
+        var String pointer;
+        var int counter;
+        let counter = 0;
+        
+        let pointer = lines[0];
+        do pointer.dispose();
+
+        while (counter < 22) {
+            let lines[counter] = lines[counter + 1];
+            let counter = counter + 1;
+        }
+
+        let lines[22] = String.new(width);
+
+        return;
+    }
+
+    method void initialize() {
+        var String line;
+        var int counter;
+        let height = 23;
+        let width = 60;
+        let lines = Array.new(23);
+        let counter = 0;
+        let exit = false;
+        
+        while (counter < 23) {
+            let line = String.new(width);
+            let lines[counter] = line;
+            let counter = counter + 1;
+        }
+
+        do clearScreen();
+        do printScreen();
+
+        return;
+    }
+
+    method void clearScreen() {
+        var int counter;
+        let counter = 0;
+        
+        while (counter < 23) {
+            let counter = counter + 1;
+            do Output.printString("                                                                ");
+            do Output.println();
+        }
+        return;
+    }
+
+    method void printScreen() {
+        var int counter;
+        let counter = 0;
+
+        while (counter < 22) {
+            do Output.printString(lines[counter]);
+            do Output.println();
+            let counter = counter + 1;
+        }
+
+        do Output.printString("> ");
+        do Output.printString(lines[22]);
+        do Output.println();
+
+        return;
+    }
+
+    method void dispose() {
+        var String pointer;
+        var int counter;
+        let counter = 0;
+        
+        while (counter < 23) {
+            let pointer = lines[counter];
+            do pointer.dispose();
+        }
+        
+        do Memory.deAlloc(this);
+        return;
+    }
+}
